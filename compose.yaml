@@ -1,0 +1,58 @@
+# This file is used to build the docker image and run the container.
+services:
+    prometheus:
+        container_name: prometheus
+        volumes:
+            - prometheus_data:/prometheus
+            - ./prometheus:/etc/prometheus:ro
+        networks:
+            - monitoring
+        ports:
+            - "9090:9090"
+        restart: unless-stopped
+        image: prom/prometheus:latest
+        command:
+            - "--config.file=/etc/prometheus/config.yml"
+    mobymetrics:
+        container_name: mobymetrics
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        networks:
+            - monitoring
+        ports:
+            - "3000:3000"
+        depends_on:
+            prometheus:
+                condition: service_started
+        restart: unless-stopped
+        build:
+            context: .
+        develop:
+            watch:
+                - action: rebuild
+                  path: .
+    grafana:
+        container_name: grafana
+        environment:
+            - GF_SECURITY_ADMIN_USER=gowizzard
+            - GF_SECURITY_ADMIN_PASSWORD=grafana
+        volumes:
+            - grafana_data:/var/lib/grafana
+            - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+        networks:
+            - monitoring
+        ports:
+            - "3001:3000"
+        depends_on:
+            prometheus:
+                condition: service_started
+        restart: unless-stopped
+        image: grafana/grafana:latest
+volumes:
+    prometheus_data:
+        driver: local
+    grafana_data:
+        driver: local
+networks:
+    monitoring:
+        driver: bridge
