@@ -1,7 +1,7 @@
 # Here you can reformat, check or build the binary
 .PHONY: fmt vet tidy download test coverage doc run build development
 
-BINARY_NAME=mobymetrics
+BINARY_NAME=restarter
 APP_PATH=cmd/${BINARY_NAME}/main.go
 
 fmt:
