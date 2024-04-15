@@ -1,3 +1,9 @@
-// Copyright 2024 J&J Ideenschmiede GmbH. All rights reserved.
+// Package main implements a simple program that exits with a non-zero status code.
+package main
 
-package restarter
+import "os"
+
+// main is the entry point for the program. It exits with a non-zero status code.
+func main() {
+	os.Exit(1)
+}
