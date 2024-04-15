@@ -21,6 +21,6 @@ RUN make build
 FROM alpine:latest AS production
 ENV TZ=Europe/Berlin
 WORKDIR /app
-COPY --from=build /tmp/src/mobymetrics .
+COPY --from=build /tmp/src/restarter .
 EXPOSE 3000
-CMD ["/app/mobymetrics"]
+CMD ["/app/restarter"]
